@@ -1,0 +1,38 @@
+{
+  "name": "Blue Crystal Signer",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description" : "Assinatura Digital.",
+  "icons": { "16": "icons/16x16.png", "48": "icons/48x48.png", "128": "icons/128x128.png" },
+
+  "omnibox": {
+    "keyword": "bluc"
+  },
+
+  "page_action": {
+    "default_icon": {
+      "19": "icons/19x19.png",
+      "38": "icons/38x38.png"
+    },
+    "default_title": "Assinar",
+    "default_popup": "main.html"
+  },
+
+  "background": {
+    "scripts": ["jquery-2.1.4.min.js", "background.js"]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*",  "file://*/*"],
+      "js": ["jquery-2.1.4.min.js", "content.js"]
+    }
+  ],
+
+  "permissions": [
+      "nativeMessaging",
+      "tabs",
+      "http://*/*",
+    "storage"
+  ]
+}
