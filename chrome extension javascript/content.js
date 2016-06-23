@@ -11,6 +11,8 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 		var key_size = document.querySelector("#bluc_key_size");
 		var certb64 = document.querySelector("#bluc_certb64");
 		var loadIcon = document.querySelector("#bluc_load_icon");
+		var loadExtension = document.querySelector("#bluc_load_extension");
+		
 
 		//if(loadIcon == null || loadIcon.innerHTML === false) {
 //		} else {
@@ -19,6 +21,11 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 				// STEP 3 SIGN
 				case "sign":
 					status.innerHTML= 'getCertificate';
+					
+					var changeEvent = document.createEvent("HTMLEvents");
+					changeEvent.initEvent("change", true, true);
+					status.dispatchEvent(changeEvent);
+
 					sendResponse();
 				break;
 				// STEP 7 SIGN
@@ -70,16 +77,25 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 					status.innerHTML= 'postIsActive';
 					error_code.innerHTML= message.status;
 					error_message.innerHTML= message.message;
-					loadIcon.innerHTML = 'false'
-
 					var changeEvent = document.createEvent("HTMLEvents");
 					changeEvent.initEvent("change", true, true);
-					error_code.dispatchEvent(changeEvent);
+					if(message.status != 0){
+						loadIcon.innerHTML = 'false'
+						error_code.dispatchEvent(changeEvent);
+					} else {
+						bluc_load_native.dispatchEvent(changeEvent);						
+					}
 
 					sendResponse();
 				break;
 				case "loadIcon":
 					status.innerHTML= 'loadIcon';
+
+					var changeEvent = document.createEvent("HTMLEvents");
+					changeEvent.initEvent("change", true, true);
+					loadExtension.dispatchEvent(changeEvent);
+
+
 					sendResponse('loadIcon');
 				break;
 				case "postSign":

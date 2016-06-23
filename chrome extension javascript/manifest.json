@@ -1,6 +1,6 @@
 {
   "name": "Blue Crystal Signer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 2,
   "description" : "Assinatura Digital.",
   "icons": { "16": "icons/16x16.png", "48": "icons/48x48.png", "128": "icons/128x128.png" },

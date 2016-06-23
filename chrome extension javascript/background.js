@@ -80,14 +80,14 @@ var postSign = function(message){
 
 var postIsActive = function(appStatus) {
 
-	if(appStatus != 0){
+	//if(appStatus != 0){
 		chrome.tabs.getSelected(null, function(tab){
 			chrome.tabs.sendMessage(tab.id, {type: "postIsActive",
 			status: appStatus},function(response){
 
 			});
 		});
-	}
+	//}
 }
 
 
@@ -249,17 +249,20 @@ function createEnvelope(createEnvelopeUrl, certificate, payload, hashAlg, time_v
 	        success: function (data) {
 	        	var json = $.parseJSON(data);
 	        	var signedContent = json.signedContent;
-	        	var isOk = json.isOk;
+	        	var signStatus = json.signStatus;
+	        	var statusMessage = json.statusMessage;
 	        	var certB64 =  json.certB64;
 	        	var certSubject =  json.certSubject;
-	        	if(isOk){
-	        		 postCreateEnvelope(signedContent, isOk);
-	        	 } else {
-	        		 alert('Assinatura inv�lida');
-	        	 }
+	        	if(signStatus == 0){
+	        		 $("#signedEnvelope").text(signedContent);
+					 postCreateEnvelope(signedContent, true);
+	        	}
+	        		 alert("Status da Assinatura: "+signStatus);
 	        },
             error: function (error) {
-                alert('error: ' + eval(error));
+				 $("#signedEnvelope").html(error.responseText);
+				 //console.log((error);
+                alert('houve um erro na criação do envelope');
             }
 
 		});
