@@ -101,24 +101,28 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 				case "postSign":
 					// STEP 13 SIGN
 					console.log(JSON.stringify(message));
+					if(message.status == 0){
 
-					var createEnvelopeUrlSpan = document.querySelector("#bluc_create_envelope_url");
-					var createEnvelopeUrl = createEnvelopeUrlSpan.innerHTML;
-					var signed_attr = document.querySelector("#bluc_signed_attr");
-					var hash_alg = document.querySelector("#bluc_hash_alg");
-					var time = document.querySelector("#bluc_time");
-					var hash = document.querySelector("#bluc_hash");
+						var createEnvelopeUrlSpan = document.querySelector("#bluc_create_envelope_url");
+						var createEnvelopeUrl = createEnvelopeUrlSpan.innerHTML;
+						var signed_attr = document.querySelector("#bluc_signed_attr");
+						var hash_alg = document.querySelector("#bluc_hash_alg");
+						var time = document.querySelector("#bluc_time");
+						var hash = document.querySelector("#bluc_hash");
 
-					var responseMsg = {
-						createEnvelopeUrl_value : createEnvelopeUrl,
-						certb64_value : certb64.innerHTML,
-						signed_attr_value : signed_attr.innerHTML,
-						hash_alg_value : hash_alg.innerHTML,
-						time_value : time.innerHTML,
-						hash_value : hash.innerHTML,
-						sign_value : message.sign
-					};
-					sendResponse(responseMsg);
+						var responseMsg = {
+							createEnvelopeUrl_value : createEnvelopeUrl,
+							certb64_value : certb64.innerHTML,
+							signed_attr_value : signed_attr.innerHTML,
+							hash_alg_value : hash_alg.innerHTML,
+							time_value : time.innerHTML,
+							hash_value : hash.innerHTML,
+							sign_value : message.sign
+						};
+						sendResponse(responseMsg);
+					} else {
+						alert("houve um erro na execução da assinatura. Status= "+message.status);
+					}
 				break;
 
 				case "postCreateEnvelope":
