@@ -53,6 +53,7 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 						});
 				break;
 				case "postLoadSignature":
+				if(message.isOk){
 					var hash = document.querySelector("#bluc_hash");
 					hash.innerHTML = message.hash;
 					var time = document.querySelector("#bluc_time");
@@ -62,14 +63,17 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 					var hash_alg = document.querySelector("#bluc_hash_alg");
 					hash_alg.innerHTML = message.hash_alg;
 
-
-
-
-
 					var changeEvent = document.createEvent("HTMLEvents");
 					changeEvent.initEvent("change", true, true);
 					signed_attr.dispatchEvent(changeEvent);
-
+				} else {
+						status.innerHTML= 'postLoadSignature';
+						error_code.innerHTML= message.status;
+						error_message.innerHTML= 'problema na assinatura (postLoadSignature)';
+						var changeEvent = document.createEvent("HTMLEvents");
+						changeEvent.initEvent("change", true, true);
+						error_code.dispatchEvent(changeEvent);					
+				}
 					sendResponse();
 				break;
 
@@ -121,7 +125,14 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 						};
 						sendResponse(responseMsg);
 					} else {
-						alert("houve um erro na execução da assinatura. Status= "+message.status);
+						//alert("houve um erro na execução da assinatura. Status= "+message.status);
+						status.innerHTML= 'postCreateEnvelope';
+						error_code.innerHTML= message.status;
+						error_message.innerHTML= 'problema na assinatura (postSign)';
+						var changeEvent = document.createEvent("HTMLEvents");
+						changeEvent.initEvent("change", true, true);
+						error_code.dispatchEvent(changeEvent);
+
 					}
 				break;
 
@@ -132,22 +143,13 @@ chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
 					error_message.innerHTML= 'problema na assinatura';
 					var signedEnvelope = document.querySelector("#bluc_signed_envelope");
 
-					if(message.isOk_value){
 						signedEnvelope.innerHTML = message.signedContent_value;
-						error_code.innerHTML= 0;
-						error_message.innerHTML= "Assinatura gerada com sucesso.";
+						error_code.innerHTML= message.status;
+					//	error_message.innerHTML= "Assinatura gerada com sucesso.";
 
 						var changeEvent = document.createEvent("HTMLEvents");
 						changeEvent.initEvent("change", true, true);
 						signedEnvelope.dispatchEvent(changeEvent);
-					} else {
-						var changeEvent = document.createEvent("HTMLEvents");
-						changeEvent.initEvent("change", true, true);
-						error_code.dispatchEvent(changeEvent);
-
-					}
-
-
 
 					sendResponse();
 				break;

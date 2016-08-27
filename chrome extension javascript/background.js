@@ -91,13 +91,14 @@ var postIsActive = function(appStatus) {
 }
 
 
-function postLoadSignature(hash_value, time_value, sa_value, hash_alg_value){
+function postLoadSignature(hash_value, time_value, sa_value, hash_alg_value, isOk_value){
 	chrome.tabs.getSelected(null, function(tab){
 				chrome.tabs.sendMessage(tab.id, {type: "postLoadSignature",
 				hash: hash_value,
 				time: time_value,
 				signed_attr: sa_value,
-				hash_alg: hash_alg_value
+				hash_alg: hash_alg_value,
+				isOk: isOk_value
 				},function(response){
 
 				});
@@ -105,11 +106,11 @@ function postLoadSignature(hash_value, time_value, sa_value, hash_alg_value){
 }
 
 
-function postCreateEnvelope(signedContent, isOk){
+function postCreateEnvelope(signedContent, status){
 	chrome.tabs.getSelected(null, function(tab){
 				chrome.tabs.sendMessage(tab.id, {type: "postCreateEnvelope",
 				signedContent_value: signedContent,
-				isOk_value: isOk
+				status: status
 				},function(response){
 
 				});
@@ -219,14 +220,16 @@ function loadSignature(certificate, thumbprint, hashAlg, loadSignatureUrl)
             time_value = data.time_value;
             sa_value = data.sa_value;
 
-            postLoadSignature(hash_value, time_value, sa_value, hashAlg);
+            postLoadSignature(hash_value, time_value, sa_value, hashAlg, true);
             signContent(thumbprint, hashAlg, sa_value);
 
             <!-- End Sign -->
 
 	        },
             error: function (error) {
-                alert('error: ' + eval(error));
+                //alert('error: ' + eval(error));
+	            postLoadSignature(hash_value, time_value, sa_value, hashAlg, false);
+
             }
      });
 
@@ -253,16 +256,12 @@ function createEnvelope(createEnvelopeUrl, certificate, payload, hashAlg, time_v
 	        	var statusMessage = json.statusMessage;
 	        	var certB64 =  json.certB64;
 	        	var certSubject =  json.certSubject;
-	        	if(signStatus == 0){
-	        		 $("#signedEnvelope").text(signedContent);
-					 postCreateEnvelope(signedContent, true);
-	        	}
-	        		 alert("Status da Assinatura: "+signStatus);
+				 postCreateEnvelope(signedContent, signStatus);
+        		 $("#signedEnvelope").text(signedContent);
 	        },
             error: function (error) {
 				 $("#signedEnvelope").html(error.responseText);
-				 //console.log((error);
-                alert('houve um erro na criação do envelope');
+				postCreateEnvelope(signedContent, -1);
             }
 
 		});
